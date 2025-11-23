@@ -1,0 +1,45 @@
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;            /* space between all inputs */
+  margin-bottom: 12px;  /* space under each row */
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+  padding: 6px;
+}
+
+.notes-wide {
+  flex: 1;               /* makes Notes stretch evenly */
+  min-width: 250px;
+}
+
+.company-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd;
+  padding: 16px;
+  margin: 16px 0;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+/* Row layout for details */
+.company-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;          /* spacing between items */
+  margin-bottom: 12px;
+}
+
+/* Each detail item */
+.detail-item {
+  min-width: 200px;  
+  font-size: 0.95rem;
+}
+
+.detail-item strong {
+  font-weight: 600;
+}
