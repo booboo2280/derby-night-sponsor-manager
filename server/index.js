@@ -108,8 +108,17 @@ app.delete("/api/companies/:id", async (req, res) => {
 // GET all sponsorships
 app.get("/api/sponsorships", async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT * FROM sponsorships ORDER BY id DESC"
+     const result = await pool.query(
+      `SELECT
+         id,
+         companyid AS "companyId",
+         type,
+         value,
+         item,
+         notes,
+         createdat AS "createdAt"
+       FROM sponsorships
+       ORDER BY id DESC`
     );
     res.json(result.rows);
   } catch (err) {
