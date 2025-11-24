@@ -4,6 +4,10 @@ import SponsorshipForm from "./SponsorshipForm";
 import CompanyList from "./CompanyList";
 import "../styles/forms.css";
 
+// Use your live Railway backend
+const API_BASE =
+  "https://derby-night-sponsor-manager-production.up.railway.app";
+
 export default function SponsorManager() {
   // ----------------------
   // STATE
@@ -40,7 +44,7 @@ export default function SponsorManager() {
         setLoadingCompanies(true);
         setError("");
 
-        const res = await fetch("/api/companies");
+        const res = await fetch(`${API_BASE}/api/companies`);
         if (!res.ok) throw new Error("Failed to fetch companies");
 
         const data = await res.json();
@@ -62,7 +66,7 @@ export default function SponsorManager() {
         setLoadingSponsorships(true);
         setError("");
 
-        const res = await fetch("/api/sponsorships");
+        const res = await fetch(`${API_BASE}/api/sponsorships`);
         if (!res.ok) throw new Error("Failed to fetch sponsorships");
 
         const data = await res.json();
@@ -94,7 +98,7 @@ export default function SponsorManager() {
     try {
       setError("");
 
-      const res = await fetch("/api/companies", {
+      const res = await fetch(`${API_BASE}/api/companies`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newCompany),
@@ -126,7 +130,7 @@ export default function SponsorManager() {
     try {
       setError("");
 
-      const res = await fetch(`/api/companies/${id}`, {
+      const res = await fetch(`${API_BASE}/api/companies/${id}`, {
         method: "DELETE",
       });
 
@@ -144,7 +148,7 @@ export default function SponsorManager() {
     try {
       setError("");
 
-      const res = await fetch(`/api/companies/${id}`, {
+      const res = await fetch(`${API_BASE}/api/companies/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updates),
@@ -183,12 +187,12 @@ export default function SponsorManager() {
       const payload = {
         companyId: newSponsorship.companyId,
         value: newSponsorship.value ? Number(newSponsorship.value) : 0,
-        type: newSponsorship.donationType,   // FIXED NAME
+        type: newSponsorship.donationType, // FIXED NAME
         item: newSponsorship.item,
         notes: newSponsorship.notes,
       };
 
-      const res = await fetch("/api/sponsorships", {
+      const res = await fetch(`${API_BASE}/api/sponsorships`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -219,7 +223,7 @@ export default function SponsorManager() {
     try {
       setError("");
 
-      const res = await fetch(`/api/sponsorships/${id}`, {
+      const res = await fetch(`${API_BASE}/api/sponsorships/${id}`, {
         method: "DELETE",
       });
 
