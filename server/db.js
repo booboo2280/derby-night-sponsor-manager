@@ -1,11 +1,13 @@
-// db.js
+// server/db.js
 const { Pool } = require("pg");
 
+// FORCE the correct public DB URL
+const connectionString =
+  "postgresql://postgres:KbbEgwuUvmqlDNukBlUXDgXuiCANmNZQ@tramway.proxy.rlwy.net:21505/railway";
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // required for Railway's managed Postgres
-  },
+  connectionString,
+  ssl: { rejectUnauthorized: false },
 });
 
 module.exports = pool;
