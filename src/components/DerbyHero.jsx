@@ -39,23 +39,7 @@ export default function DerbyHero() {
             <span>📅 <strong>Saturday • March 14, 2026</strong></span>
             <span>⏰ Doors 6:30 PM • First race 7:00 PM</span>
             <span>📍 The Glendale Lyceum : Glendale, Oh</span>
-          </div>
-
-          {/* Buttons */}
-          <div className="flex flex-wrap gap-4 mb-4">
-            <a
-              href="#tickets"
-              className="inline-flex items-center justify-center rounded-xl bg-emerald-500 px-5 py-2 text-sm sm:text-base font-semibold text-white shadow-lg shadow-emerald-900/40 hover:bg-emerald-400 transition"
-            >
-              🎟 Get Tickets
-            </a>
-            <a
-              href="#sponsors"
-              className="inline-flex items-center justify-center rounded-xl bg-white/20 px-5 py-2 text-sm sm:text-base font-semibold text-white border border-white/30 hover:bg-white/30 transition"
-            >
-              🤝 Become a Sponsor
-            </a>
-          </div>
+          </div>        
 
           {/* Dress code */}
           <p className="text-xs sm:text-sm text-slate-100/80">
