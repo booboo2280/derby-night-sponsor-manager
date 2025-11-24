@@ -31,7 +31,7 @@ export default function DerbyHero() {
           {/* Description */}
           <p className="text-sm sm:text-lg lg:text-xl text-slate-100/90 max-w-xl mb-6">
             A night at the races to support our students, teachers, and classrooms.
-            Join us for horse-race games, raffle baskets, silent auctions, and Derby-inspired fun.
+            Join us for horse-race games and raffle baskets.
           </p>
 
           {/* Event info */}
