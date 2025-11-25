@@ -2,28 +2,21 @@ import { Link } from "react-router-dom";
 
 export default function Home() {
   return (
-    <div className="max-w-xl mx-auto mt-10 text-center">
-      <h1 className="text-3xl font-bold mb-6">Derby Night Tools</h1>
+    <div style={{ maxWidth: "640px", margin: "3rem auto", textAlign: "left" }}>
+      <h1 style={{ fontSize: "2.5rem", fontWeight: "700", marginBottom: "1rem" }}>
+        Derby Night Tools
+      </h1>
 
-      <p className="text-lg mb-10 text-slate-600">
-        Choose a section below to begin.
+      <p style={{ fontSize: "1.1rem", color: "#475569", marginBottom: "1.5rem" }}>
+        Use the navigation above to manage sponsors and plan decorations for Derby Night.
       </p>
 
-      <div className="flex flex-col gap-6">
-        <Link
-          to="/sponsors"
-          className="bg-blue-600 text-white py-4 rounded-lg shadow hover:bg-blue-700"
-        >
-          Sponsorship Manager
-        </Link>
-
-        <Link
-          to="/decorations"
-          className="bg-green-600 text-white py-4 rounded-lg shadow hover:bg-green-700"
-        >
-          Decorations
-        </Link>
-      </div>
+      <p style={{ fontSize: "0.95rem", color: "#64748b" }}>
+        Start by visiting the{" "}
+        <Link to="/sponsors">Sponsorship Manager</Link> to add companies and
+        track donations, or go to <Link to="/decorations">Decorations</Link> to
+        plan event decor.
+      </p>
     </div>
   );
 }
