@@ -8,7 +8,6 @@ export default function CompanyList({
   deleteCompany,
   deleteSponsorship,
 }) {
-  // Local editing state
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({
     name: "",
@@ -48,11 +47,10 @@ export default function CompanyList({
     });
   };
 
-  const saveEdit = () => {
+  const saveEdit = async () => {
     if (!editingId) return;
 
-    // Send all fields to backend (matches your PUT route)
-    updateCompany(editingId, {
+    await updateCompany(editingId, {
       name: editData.name,
       contact: editData.contact,
       status: editData.status,
@@ -97,10 +95,9 @@ export default function CompanyList({
             const value = e.target.value;
 
             if (isEditing) {
-              // While editing, just update local state
               setEditData((prev) => ({ ...prev, status: value }));
             } else {
-              // Not in edit mode: keep your existing quick-update behavior
+              // quick status change when not in full edit mode
               updateCompany(company.id, {
                 name: company.name,
                 contact: company.contact,
@@ -123,10 +120,7 @@ export default function CompanyList({
                     className="border rounded px-2 py-1 text-sm flex-1"
                     value={editData.name}
                     onChange={(e) =>
-                      setEditData((prev) => ({
-                        ...prev,
-                        name: e.target.value,
-                      }))
+                      setEditData((prev) => ({ ...prev, name: e.target.value }))
                     }
                     placeholder="Company name"
                   />
@@ -195,11 +189,8 @@ export default function CompanyList({
                 }}
               >
                 {/* LEFT: company details */}
-                <div
-                  className="company-details"
-                  style={{ flex: "1 1 260px", marginBottom: 0 }}
-                >
-                  {/* STATUS DROPDOWN (editable) */}
+                <div style={{ flex: "1 1 260px" }}>
+                  {/* STATUS */}
                   <div className="detail-item flex items-center gap-2 mb-1">
                     <strong>Status:</strong>
                     <select
@@ -242,7 +233,7 @@ export default function CompanyList({
                   </div>
 
                   {/* NOTES */}
-                  <div className="detail-item" style={{ minWidth: "260px" }}>
+                  <div className="detail-item">
                     <strong>Notes:</strong>{" "}
                     {isEditing ? (
                       <textarea
@@ -265,13 +256,8 @@ export default function CompanyList({
                   </div>
                 </div>
 
-                {/* RIGHT: sponsorship table */}
-                <div
-                  style={{
-                    flex: "1 1 320px",
-                    minWidth: "280px",
-                  }}
-                >
+                {/* RIGHT: sponsorship table (unchanged layout) */}
+                <div style={{ flex: "1 1 320px", minWidth: "280px" }}>
                   <div className="flex items-center justify-between mb-1">
                     <h4 className="font-semibold text-sm">
                       Sponsorships for {company.name}
