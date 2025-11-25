@@ -371,7 +371,7 @@ export default function CompanyList({
           );
         })}
       </div>
-      {/* END GRID WRAPPER */}
+      {/* END GRID WRAPPER */} 
     </section>
   );
 }
