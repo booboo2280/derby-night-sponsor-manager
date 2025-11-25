@@ -1,34 +1,24 @@
-// src/App.jsx
-import React, { useEffect, useState } from "react";
-import DerbyHero from "./components/DerbyHero";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Home from "./components/Home";
 import SponsorManager from "./components/SponsorManager";
-import Login from "./components/Login";
+import Decorations from "./components/Decorations";
 
 export default function App() {
-  const [isAuthed, setIsAuthed] = useState(false);
-
-  useEffect(() => {
-    // check if user already logged in previously
-    const stored = localStorage.getItem("derby-authed");
-    if (stored === "true") {
-      setIsAuthed(true);
-    }
-  }, []);
-
-  const handleLoginSuccess = () => {
-    setIsAuthed(true);
-  };
-
-  if (!isAuthed) {
-    // show login screen until authenticated
-    return <Login onSuccess={handleLoginSuccess} />;
-  }
-
-  // once logged in, show the actual app
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
-      <DerbyHero />
-      <SponsorManager />
-    </div>
+    <Router>
+      <nav className="bg-slate-800 text-white p-4 flex gap-6">
+        <Link to="/" className="hover:underline">Home</Link>
+        <Link to="/sponsors" className="hover:underline">Sponsorship Manager</Link>
+        <Link to="/decorations" className="hover:underline">Decorations</Link>
+      </nav>
+
+      <div className="p-6">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/sponsors" element={<SponsorManager />} />
+          <Route path="/decorations" element={<Decorations />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
