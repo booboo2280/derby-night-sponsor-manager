@@ -19,6 +19,6 @@ export default function App() {
           <Route path="/decorations" element={<Decorations />} />
         </Routes>
       </div>
-    </Router>
+    </Router> 
   );
 }
