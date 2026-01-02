@@ -294,5 +294,6 @@ export default function SponsorManager() {
         </div>
       </section>
     </div>
+    </main>
   );
 }
