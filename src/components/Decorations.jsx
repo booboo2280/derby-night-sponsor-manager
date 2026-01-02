@@ -13,16 +13,30 @@ export default function Decorations() {
     if (params.get('canva') === 'connected') setConnected(true);
   }, []);
 
+  // Use Vite env var to target the backend server in production
+  const serverRoot = import.meta.env.VITE_SERVER_ROOT || '';
+
   const connectCanva = () => {
+    if (!serverRoot) {
+      alert('Server root (VITE_SERVER_ROOT) is not configured. Set it to your backend URL (e.g. https://my-server.com) and redeploy the frontend.');
+      return;
+    }
+
     // opens the server OAuth redirect which will go to Canva
-    window.open('/auth/canva', '_blank', 'width=700,height=800');
+    const url = `${serverRoot.replace(/\/$/, '')}/auth/canva`;
+    window.open(url, '_blank', 'width=700,height=800');
   };
 
   const fetchAssets = async () => {
+    if (!serverRoot) {
+      setError('Server root not configured. Cannot fetch assets.');
+      return;
+    }
+
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/canva/assets');
+      const res = await fetch(`${serverRoot.replace(/\/$/, '')}/api/canva/assets`);
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         setError(body?.error || 'Failed to fetch assets');
