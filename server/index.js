@@ -176,6 +176,104 @@ app.delete("/api/sponsorships/:id", async (req, res) => {
 });
 
 // ----------------------
+// CANVA OAUTH + ASSETS (simple import flow)
+// ----------------------
+const { readStore, writeStore } = require('./canvaStore');
+
+// Redirects user to Canva OAuth authorization URL
+app.get('/auth/canva', (req, res) => {
+  const clientId = process.env.CANVA_CLIENT_ID;
+  const redirectUri = process.env.CANVA_REDIRECT_URI || `${process.env.SERVER_ROOT || `http://localhost:${PORT}`}/auth/canva/callback`;
+  const scope = process.env.CANVA_SCOPES || 'assets:read';
+
+  if (!clientId) {
+    return res.status(500).send('CANVA_CLIENT_ID not configured on server. Set CANVA_CLIENT_ID in your environment.');
+  }
+
+  const authUrl = `${process.env.CANVA_AUTH_URL || 'https://www.canva.com/oauth2/authorize'}?response_type=code&client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}`;
+
+  res.redirect(authUrl);
+});
+
+// Callback: exchange code for tokens and save them
+app.get('/auth/canva/callback', async (req, res) => {
+  const code = req.query.code;
+  if (!code) return res.status(400).send('Missing code in callback');
+
+  const clientId = process.env.CANVA_CLIENT_ID;
+  const clientSecret = process.env.CANVA_CLIENT_SECRET;
+  const tokenUrl = process.env.CANVA_TOKEN_URL || 'https://api.canva.com/v1/oauth/token';
+  const redirectUri = process.env.CANVA_REDIRECT_URI || `${process.env.SERVER_ROOT || `http://localhost:${PORT}`}/auth/canva/callback`;
+
+  if (!clientId || !clientSecret) {
+    return res.status(500).send('CANVA_CLIENT_ID or CANVA_CLIENT_SECRET not configured on server.');
+  }
+
+  try {
+    // Exchange code for tokens (standard OAuth2)
+    const params = new URLSearchParams();
+    params.append('grant_type', 'authorization_code');
+    params.append('code', code);
+    params.append('redirect_uri', redirectUri);
+    params.append('client_id', clientId);
+    params.append('client_secret', clientSecret);
+
+    const tokenRes = await fetch(tokenUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString(),
+    });
+
+    if (!tokenRes.ok) {
+      const text = await tokenRes.text();
+      console.error('Token exchange failed', tokenRes.status, text);
+      return res.status(500).send('Token exchange failed. Check server logs.');
+    }
+
+    const tokenData = await tokenRes.json();
+
+    // Save tokens to simple file store (for prototype). In production, store in DB and secure it.
+    writeStore({ tokenData, savedAt: new Date().toISOString() });
+
+    // Redirect back to the front-end Decorations page
+    const frontRedirect = process.env.FRONTEND_ROOT || 'http://localhost:5173';
+    res.redirect(`${frontRedirect}/decorations?canva=connected`);
+  } catch (err) {
+    console.error('Error exchanging code for token', err);
+    res.status(500).send('OAuth callback error');
+  }
+});
+
+// Proxy to fetch assets from Canva using stored token
+app.get('/api/canva/assets', async (req, res) => {
+  const store = readStore();
+  if (!store || !store.tokenData || !store.tokenData.access_token) {
+    return res.status(401).json({ error: 'Canva not connected. Visit /auth/canva to connect.' });
+  }
+
+  const assetsUrl = process.env.CANVA_ASSETS_URL || 'https://api.canva.com/v1/assets';
+
+  try {
+    const assetsRes = await fetch(assetsUrl, {
+      headers: { Authorization: `Bearer ${store.tokenData.access_token}` },
+    });
+
+    if (!assetsRes.ok) {
+      // If API fails (e.g., wrong URL), return helpful error
+      const text = await assetsRes.text();
+      console.error('Canva assets fetch failed', assetsRes.status, text);
+      return res.status(502).json({ error: 'Failed to fetch Canva assets. Check CANVA_ASSETS_URL and tokens on server.' });
+    }
+
+    const assets = await assetsRes.json();
+    res.json(assets);
+  } catch (err) {
+    console.error('Error fetching assets', err);
+    res.status(500).json({ error: 'Error fetching assets from Canva' });
+  }
+});
+
+// ----------------------
 // START SERVER
 // ----------------------
 app.listen(PORT, () => {
