@@ -60,27 +60,26 @@ export default function SponsorManager() {
     loadCompanies();
   }, []);
 
+  // fetch sponsorships (extracted so we can reuse after mutations)
+  const loadSponsorships = async () => {
+    try {
+      setLoadingSponsorships(true);
+      setError("");
+
+      const res = await fetch(`${API_BASE}/api/sponsorships`);
+      if (!res.ok) throw new Error("Failed to fetch sponsorships");
+
+      const data = await res.json();
+      setSponsorships(data);
+    } catch (err) {
+      console.error("Error loading sponsorships", err);
+      setError("Could not load sponsorships. Make sure the server is running.");
+    } finally {
+      setLoadingSponsorships(false);
+    }
+  };
+
   useEffect(() => {
-    const loadSponsorships = async () => {
-      try {
-        setLoadingSponsorships(true);
-        setError("");
-
-        const res = await fetch(`${API_BASE}/api/sponsorships`);
-        if (!res.ok) throw new Error("Failed to fetch sponsorships");
-
-        const data = await res.json();
-        setSponsorships(data);
-      } catch (err) {
-        console.error("Error loading sponsorships", err);
-        setError(
-          "Could not load sponsorships. Make sure the server is running."
-        );
-      } finally {
-        setLoadingSponsorships(false);
-      }
-    };
-
     loadSponsorships();
   }, []);
 
@@ -185,7 +184,7 @@ export default function SponsorManager() {
       setError("");
 
       const payload = {
-        companyId: newSponsorship.companyId,
+        companyId: Number(newSponsorship.companyId),
         value: newSponsorship.value ? Number(newSponsorship.value) : 0,
         type: newSponsorship.donationType, // FIXED NAME
         item: newSponsorship.item,
@@ -201,7 +200,9 @@ export default function SponsorManager() {
       if (!res.ok) throw new Error("Failed to save sponsorship");
 
       const saved = await res.json();
-      setSponsorships((prev) => [saved, ...prev]);
+
+      // Refresh from server to ensure consistent shape and ordering
+      await loadSponsorships();
 
       setNewSponsorship({
         companyId: "",
@@ -229,7 +230,8 @@ export default function SponsorManager() {
 
       if (!res.ok) throw new Error("Failed to delete sponsorship");
 
-      setSponsorships((prev) => prev.filter((s) => s.id !== id));
+      // Refresh list after deletion
+      await loadSponsorships();
     } catch (err) {
       console.error("Error deleting sponsorship", err);
       setError("Could not delete sponsorship.");
