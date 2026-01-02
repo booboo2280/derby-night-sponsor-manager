@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import CompanyForm from "./CompanyForm";
 import SponsorshipForm from "./SponsorshipForm";
 import CompanyList from "./CompanyList";
+import DerbyHero from "./DerbyHero";
 import "../styles/forms.css";
 
 // Use your live Railway backend
@@ -242,11 +243,14 @@ export default function SponsorManager() {
   // RENDER
   // ----------------------
   return (
-    <div className="mt-8">
-      <section className="bg-white shadow-md rounded-xl p-4 sm:p-6 mb-6">
-        <h2 className="text-2xl font-bold text-emerald-800 mb-4">
-          Sponsor Manager
-        </h2>
+    <main>
+      <DerbyHero />
+
+      <div className="mt-8">
+        <section className="bg-white shadow-md rounded-xl p-4 sm:p-6 mb-6">
+          <h2 className="text-2xl font-bold text-emerald-800 mb-4">
+            Sponsor Manager
+          </h2>
 
         {error && (
           <div className="mb-4 p-3 rounded bg-red-50 text-sm text-red-700 border border-red-200">
